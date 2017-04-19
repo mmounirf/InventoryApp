@@ -1,0 +1,130 @@
+<md-dialog aria-label="Add Product" class="addProductDialog">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2><md-icon>add_shopping_cart</md-icon> {{'Add_Product' | translate}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <i class="material-icons">clear</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <form name="add_product_form">
+
+                  <div layout="column">
+
+                      <md-input-container class="md-block">
+                        <label>{{'Title' | translate}}</label>
+                        <md-icon class="input-field-icons">local_offer</md-icon>
+                        <input required name="title" ng-model="product.title" type="text" ng-change="update_length(maxlength-1)">
+                        <div ng-messages="add_product_form.title.$error">
+                          <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                        </div>
+                      </md-input-container>
+
+                      <md-input-container class="md-block">
+                          <label>{{'Description' | translate}}</label>
+                          <md-icon class="input-field-icons">assignment</md-icon>
+                          <input type="text" name="description" ng-model="product.description"/>
+                        </md-input-container>
+
+                      <md-input-container class="md-block">
+                        <label>{{'Quantity' | translate}}</label>
+                        <md-icon class="input-field-icons">add_box</md-icon>
+                        <input required name="quantity" ng-pattern="/^\d+$/" ng-model="product.quantity" type="number">
+                        <div ng-messages="add_product_form.quantity.$error">
+                          <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          <div ng-message="pattern">{{'Pattern_Validation' | translate}}</div>
+                        </div>
+                      </md-input-container>
+
+
+                      <md-input-container class="md-block">
+                        <label>{{'Barcode' | translate}}</label>
+                          <md-icon class="input-field-icons inv-icons flaticon-barcode-product"></md-icon>
+                        <input name="barcode" ng-focus="selectAllContent($event)" ng-model="product.barcode" md-selected-item="selectedItem">
+                        <div class="hint">{{'Barcode_Scan_Hint' | translate}}</div>
+                      </md-input-container>
+
+
+                      <div class="acContainer">
+                                  <md-icon class="input-field-icons">location_on</md-icon>
+                      <md-autocomplete
+                                required
+                                name="location"
+                                md-selected-item="product.location"
+                                ng-disabled=false
+                                md-no-cache=true
+                                md-search-text="searchText"
+                                md-selected-item-change="getSelectedRoom(room)"
+                                md-items="room in rooms | filter:searchText"
+                                md-item-text="room.roomName"
+                                md-min-length="0"
+                                md-menu-class="room-autocomplete"
+                                placeholder="{{'Select_Room' | translate}}">
+                              <md-item-template>
+                                <span class="item-title">
+                                  <span md-highlight-text="searchText" md-highlight-flags="^i">{{room.roomName}}</span>
+                                </span>
+                                <span class="item-metadata">
+
+                                  {{'Floor' | translate}}: <md-icon class="material-icons">looks_{{room.floor | floorIcon}}</md-icon>
+                                  {{'Room_Number' | translate}}: <strong>{{room.roomNumber}}{{room.roomExtension}}</strong>
+
+                                </span>
+                              </md-item-template>
+
+                              <md-not-found>
+                                {{'No_Rooms_Matching' | translate}} "{{searchText}}" {{'Were_Found' | translate}}.
+                              </md-not-found>
+                            </md-autocomplete>
+                            {{roomAutoComplete}}
+                          </div>
+
+
+
+                  </div>
+
+                  <div layout="row" class="barcodeRow">
+                    <div flex="50" class="barcodeCol">
+                      <p class="barcodeMSG" ng-hide="product.barcode.length>1">
+                        {{'Barcode_Placeholder' | translate}}
+                      </p>
+                      <barcode
+                        type="code128b"
+                        render="img"
+                        string="{{product.barcode}}"
+                        options="barcodeOptions"
+                        ng-show="product.barcode.length>1">
+                      </barcode>
+                    </div>
+                    <div flex="50" class="qrCodeCol">
+                      <p class="barcodeMSG" ng-hide="product.title || product.location">
+                        {{'QrCode_Placeholder' | translate}}
+                      </p>
+                       <qrcode version="4"
+                              error-correction-level="L"
+                              size="1000"
+                              data="{{product.title}}-{{product.location.roomNumber}}{{product.location.roomExtension}}"
+                              ng-if="product.title || product.location"
+                              download>
+                      </qrcode>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button class="md-raised md-warn" ng-click="cancel()">
+                {{'Cancel' | translate}}
+            </md-button>
+            <md-button class="md-raised md-primary saveBtn" ng-click="save(product)" ng-disabled="add_product_form.$invalid || saveProgress">
+                {{'Save' | translate}} <md-progress-circular ng-if="saveProgress" class="saveProgress" md-mode="indeterminate" md-diameter="20" ></md-progress-circular>
+            </md-button>
+        </md-dialog-actions>
+
+</md-dialog>

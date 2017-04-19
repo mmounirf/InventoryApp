@@ -1,0 +1,90 @@
+<md-content layout="column" layout-padding class="layout-column flex">
+    <md-card>
+        <md-input-container>
+            <label>{{'Scan_Barcode_or_QR_Code' | translate}}</label>
+            <input ng-model="product_barcode" ng-change="get_product_by_barcode()">
+        </md-input-container>
+
+        <div class="no-results">
+          <img class="no-result-image" width="200" ng-show="product_barcode.length>1 && !product_found" src="./app/icons/searching.png" />
+
+        <h1 class="no-result-text" ng-show="product_barcode.length>1 && !product_found">{{'Search_Not_Found' | translate}}<br/>
+          <a ng-click="go_to('products')" class="no-result-link">
+            <md-button class="md-primary md-hue-1">{{'Suggest_Add_New' | translate}}</md-button>
+          </a>
+        </h1>
+        </div>
+
+
+
+        <div layout="row" ng-show="product_found" class="products-info">
+            <div flex="30" class="product_img">
+              <qrcode class="checkin-QRCode" version="4"
+                     error-correction-level="L"
+                     size="1000"
+                     data="{{qrcode}}"
+                     download>
+             </qrcode>
+                <p>{{title}}-{{room.roomNumber}}{{room.roomExtension}}</p>
+                <barcode type="code128b"
+                         render="img"
+                         string="{{barcode}}"
+                         options="barcodeOptions"
+                         class="productsBarcode50">
+                </barcode>
+                <p>{{barcode}}</p>
+            </div>
+            <div flex="70">
+                <div layout="column">
+                    <div flex class="products-info">
+                        <p><span>{{'Title' | translate}}:</span> {{title}}</p>
+                        <p><span>{{'Description' | translate}}:</span> {{description}}</p>
+                        <p><span>{{'Quantity' | translate}}:</span> {{quantity}}</p>
+                        <p><span>{{'In_Stock' | translate}}:</span> {{instock}}</p>
+                        <p><span>{{'Out_Stock' | translate}}:</span> {{outstock}}</p>
+                        <p><span>{{'Room' | translate}}:</span> {{room.roomNumber}}{{room.roomExtension}}</p>
+                        <p><span>{{'Created_On' | translate}}:</span> {{createdAt | date: "dd.EEE.MMM.y"}} <span class="moment_ago">{{createdAt | moment: 'fromNow'}}</span></p>
+                        <p><span>{{'Updated_On' | translate}}:</span> {{updatedAt | date: "dd.EEE.MMM.y"}} <span class="moment_ago">{{updatedAt | moment: 'fromNow'}}</span></p>
+                    </div>
+                </div>
+
+                <div layout="column">
+                    <div flex>
+                      <form name="checkOutForm">
+                        <md-input-container class="md-block checkin-quantity">
+                            <label>{{'Check_In_Quantity' | translate}}</label>
+                            <md-icon class="input-field-icons">add_circle</md-icon>
+                            <input required type="number" name="quantity" ng-model="checkin_quantity" min="1" ng-pattern="/^\d+$/" />
+                            <div ng-messages="checkOutForm.quantity.$error" multiple md-auto-hide="false">
+                              <div ng-message="required">
+                                {{'Check_In_Quantity_Required' | translate}}
+                              </div>
+
+                              <div ng-message="min">
+                                {{'Min_Quantity_Validation' | translate}}
+                              </div>
+
+                              <div ng-message="pattern">
+                                {{'Pattern_Validation' | translate}}
+                              </div>
+                            </div>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" style="display: inline-block; width: 43%;">
+                            <label>{{'User_Name' | translate}}</label>
+                            <md-icon class="input-field-icons">person</md-icon>
+                            <input type="text" name="name" ng-model="loggedInUser.name" disabled required />
+                        </md-input-container>
+                      </form>
+
+                    </div>
+                </div>
+                <md-button ng-if="loggedInUser.role == 'admin'" class="md-raised md-primary checkin-btn" ng-click="checkin()" ng-disabled="checkOutForm.$invalid">
+                    <md-icon>call_received</md-icon> {{'Checkin' | translate}}</md-button>
+
+                <md-button ng-if="loggedInUser.role == 'user'" style="width:250px;" class="md-raised md-primary checkin-btn" ng-click="request_checkin()" ng-disabled="checkInForm.$invalid"><md-icon>call_received</md-icon> {{'Request_Check_In' | translate}}</md-button>
+            </div>
+        </div>
+
+    </md-card>
+</md-content>

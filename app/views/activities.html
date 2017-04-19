@@ -1,0 +1,70 @@
+<md-content layout="column" layout-padding class="layout-column flex">
+    <md-card>
+      <md-toolbar class="md-table-toolbar md-default" ng-hide="filter.show">
+    <div class="md-toolbar-tools">
+      <h2 class="md-title">{{'All_Activities' | translate}}</h2>
+      <div flex="" class="flex"></div>
+      <md-button class="md-icon-button" ng-click="loadStuff()">
+        <md-tooltip md-direction="top">
+            {{'Reload_Activities' | translate}}
+        </md-tooltip>
+        <md-icon>refresh</md-icon>
+      </md-button>
+      <md-button class="md-icon-button" ng-click="filter.show = true">
+        <md-tooltip md-direction="top">
+            {{'Search_Activities' | translate}}
+        </md-tooltip>
+        <md-icon class="material-icons">search</md-icon>
+      </md-button>
+
+    </div>
+  </md-toolbar>
+  <md-toolbar class="md-table-toolbar md-default" ng-show="filter.show">
+    <div class="md-toolbar-tools">
+
+      <md-input-container flex md-no-float class="md-block md-icon-left" style="padding-top: 17px;">
+        <md-icon style="padding-top: 15px;">search</md-icon>
+            <input ng-model="search.$" type="text" placeholder="{{'Search_in_Activities' | translate}}" id="searchInput" show-focus="filter.show">
+       </md-input-container>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+        <md-icon>close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+    </md-card>
+    <md-card>
+      <md-table-container>
+        <table md-table md-progress="promise">
+          <thead md-head md-order="query.order" md-on-reorder="getUsers">
+            <tr md-row>
+              <th md-column md:order:by="user">{{'User' | translate}}</th>
+              <th md-column data-md-order-by="checkin_quantity">{{'Check_In_Products' | translate}}</th>
+              <th md-column data-md-order-by="checkout_quantity">{{'Check_Out_Products' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody md-body>
+            <tr md-row ng-repeat="(key, value) in activities | filter:search:strict | limitTo: query.limit : (query.page -1) * query.limit | orderBy : '-updatedAt' | groupBy: 'user'">
+              <td md-cell>{{key}}</td>
+              <td md-cell>
+                <ul ng-repeat="activity in value" ng-if="activity.product.checkin_quantity">
+                  <li style="width: 35%;">{{activity.product.checkin_quantity}} x {{activity.product.name}}
+                    <span class="moment_ago" style="float: right;">{{activity.updatedAt | moment: 'fromNow'}}</span>
+                  </li>
+                </ul>
+              </td>
+              <td md-cell>
+                <ul ng-repeat="activity in value" ng-if="activity.product.checkout_quantity">
+                  <li style="width: 35%;">{{activity.product.checkout_quantity}} x {{activity.product.name}}
+                    <span class="moment_ago" style="float: right;">{{activity.createdAt | moment: 'fromNow'}}</span>
+                  </li>
+              </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </md-table-container>
+
+      <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{count}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+    </md-card>
+  </md-content>

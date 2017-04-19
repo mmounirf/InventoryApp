@@ -1,0 +1,93 @@
+<md-content layout="column" layout-padding class="layout-column flex">
+  <md-card class="products-table-toolbar">
+    <md-toolbar class="md-table-toolbar md-default" ng-hide="selected.length || filter.show">
+  <div class="md-toolbar-tools">
+    <h2 class="md-title">{{'All_Rooms' | translate}}</h2>
+    <div flex="" class="flex"></div>
+    <md-button class="md-icon-button" ng-click="loadStuff()">
+      <md-tooltip md-direction="top">
+          {{'Reload_Rooms' | translate}}
+      </md-tooltip>
+      <md-icon>refresh</md-icon>
+    </md-button>
+    <md-button class="md-icon-button" ng-click="filter.show = true">
+      <md-tooltip md-direction="top">
+          {{'Search_Rooms' | translate}}
+      </md-tooltip>
+      <md-icon class="material-icons">search</md-icon>
+    </md-button>
+    <md-button class="md-icon-button md-primary" ng-click="addRoom()" ng-if="loggedInUser.permissions.add_room">
+      <md-tooltip md-direction="top">
+          {{'Add_Room' | translate}}
+      </md-tooltip>
+      <md-icon class="material-icons">add_location</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-toolbar class="md-table-toolbar md-default" ng-show="filter.show && !selected.length">
+  <div class="md-toolbar-tools">
+
+    <md-input-container flex md-no-float class="md-block md-icon-left" style="padding-top: 17px;">
+      <md-icon style="padding-top: 15px;">search</md-icon>
+          <input ng-model="search.$" type="text" placeholder="{{'Search_in_Rooms' | translate}}" id="searchInput" show-focus="filter.show">
+     </md-input-container>
+    <md-button class="md-icon-button" ng-click="removeFilter()">
+      <md-icon>close</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-toolbar class="md-table-toolbar alternate" ng-show="selected.length">
+  <div class="md-toolbar-tools" layout-align="space-between">
+    <div style="height: 50%; margin: auto 0;">{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+    <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="delete(selected)" ng-if="loggedInUser.permissions.delete_room">
+      <md-icon style="color: #FFF;">delete</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+  </md-card>
+
+  <md-card>
+    <md-table-container>
+      <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
+        <thead md-head md-order="query.order">
+          <tr md-row>
+            <th md-column md:order:by="floor">{{'Floor' | translate}}</th>
+            <th md-column>{{'Room_Name' | translate}}</th>
+            <th md-column md:order:by="roomNumber">{{'Room_Number' | translate}}</th>
+            <th md-column data-md-numeric data-md-order-by="createdAt">{{'Created_On' | translate}}</th>
+            <th md-column data-md-numeric data-md-order-by="updatedAt">{{'Updated_On' | translate}}</th>
+            <th md-column></th>
+          </tr>
+        </thead>
+        <tbody md-body>
+          <tr md-row md-select="room" md-on-select="selectedItems" md-on-deselect="selectedItems" md-select-id="roomNumber" ng-repeat="room in rooms | filter:search:strict | limitTo: query.limit : (query.page -1) * query.limit | orderBy: query.order">
+
+            <td md-cell data-md-numeric data-md-order-by>{{room.floor}}</td>
+            <td md-cell>{{room.roomName}}</td>
+            <td md-cell data-md-order-by>{{room.roomNumber}}<span ng-if="room.roomExtension">-{{room.roomExtension}}</spa></td>
+            <td md-cell><p>on {{room.createdAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{room.createdAt | moment: 'fromNow'}}</span></td>
+            <td md-cell><p>on {{room.updatedAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{room.updatedAt | moment: 'fromNow'}}</span></td>
+            <td md-cell>
+              <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="deleteRoom(room._id)" ng-if="loggedInUser.permissions.delete_room">
+                <md-tooltip md-direction="top">
+                    {{'Delete' | translate}} {{room.roomName}}
+                </md-tooltip>
+                <md-icon style="color: #f44336;">delete</md-icon>
+              </md-button>
+              <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="editRoom(room._id)" ng-if="loggedInUser.permissions.edit_room">
+                <md-tooltip md-direction="top">
+                    {{'Edit' | translate}} {{room.roomName}}
+                </md-tooltip>
+                <md-icon style="color: #4CAF50;">create</md-icon>
+              </md-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </md-table-container>
+
+    <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{rooms.length}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+  </md-card>
+</md-content>

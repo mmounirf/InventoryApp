@@ -1,0 +1,168 @@
+<md-content layout-padding ng-cloak>
+    <div layout="row">
+        <div flex>
+            <md-card class="bg-icon-card all-products-card">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{count}}</span>
+                        <span class="md-subhead">{{'Total_Number_of_Products' | translate}}</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-lg card-media">
+                            <img src="./app/icons/products.png">
+                        </div>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="start center">
+                    <md-button class="md-raised md-default" ng-click="go_to('products')" ng-if="loggedInUser.permissions.view_product">
+                        <md-icon>list</md-icon> {{'Products_List' | translate}}</md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+        <div flex>
+            <md-card class="bg-icon-card checkin-products-card">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{inStock}}</span>
+                        <span class="md-subhead">{{'Check_In_Products' | translate}}</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-lg card-media">
+                            <img src="./app/icons/checkin.png">
+                        </div>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="start center">
+                    <md-button class="md-raised md-default" ng-click="go_to('check_in_product')" ng-if="loggedInUser.permissions.checkin_product">
+                        <md-icon>call_received</md-icon> {{'Check_In_Product' | translate}}</md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+        <div flex>
+            <md-card class="bg-icon-card checkout-products-card">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">{{outStock}}</span>
+                        <span class="md-subhead">{{'Check_Out_Products' | translate}}</span>
+                    </md-card-title-text>
+                    <md-card-title-media>
+                        <div class="md-media-lg card-media">
+                            <img src="./app/icons/checkout.png">
+                        </div>
+                    </md-card-title-media>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="start center">
+                    <md-button class="md-raised md-default" ng-click="go_to('check_out_product')" ng-if="loggedInUser.permissions.checkout_product">
+                        <md-icon>call_made</md-icon> {{'Check_Out_Product' | translate}}</md-button>
+                </md-card-actions>
+            </md-card>
+        </div>
+    </div>
+    <div layout="row">
+      <div flex ng-if="loggedInUser.permissions.view_activities">
+        <md-card>
+          <md-card-content>
+            <md-header>{{'Users_Activity' | translate}}</md-header>
+            <md-list flex style="max-height: 450px; overflow: auto;">
+
+                <md-list-item class="md-2-line" ng-repeat="activity in activities | orderBy : '-updatedAt'">
+                  <md-icon ng-if="activity.product.checkout_quantity" style="color: #f44336">call_made</md-icon>
+                  <md-icon ng-if="activity.product.checkin_quantity" style="color: #8BC34A">call_received</md-icon>
+                  <div class="md-list-item-text">
+                  <h3>{{activity.user}}</h3>
+
+                  <p ng-if="activity.product.checkout_quantity">{{'Checkout' | translate}}
+                    <strong>{{activity.product.checkout_quantity}}</strong> {{'of' | translate}}
+                    <strong>{{activity.product.name}}</strong> {{'on' | translate}}
+                    <strong>{{activity.updatedAt | date: "dd.EEE.MMM.y"}}</strong>
+                    <span class="moment_ago" style="float:right;">{{activity.updatedAt | moment: 'fromNow'}}</span>
+                  </p>
+
+                  <p ng-if="activity.product.checkin_quantity">{{'Checkin' | translate}}
+                    <strong>{{activity.product.checkin_quantity}}</strong> {{'of' | translate}}
+                    <strong>{{activity.product.name}}</strong> {{'on' | translate}}
+                    <strong>{{activity.updatedAt | date: "dd.EEE.MMM.y"}}</strong>
+                    <span class="moment_ago" style="float:right;">{{activity.updatedAt | moment: 'fromNow'}}</span>
+                  </p>
+                </div>
+          </md-card-content>
+        </md-card>
+      </div>
+
+      <div flex>
+        <md-card>
+          <md-card-content>
+            <md-header>{{'Requests' | translate}}</md-header>
+            <md-list flex style="max-height: 450px; overflow: auto;">
+                <md-list-item class="md-2-line" ng-repeat="request in requests">
+                  <md-icon ng-if="request.status === 'Pending'" style="color:#FF9800;" class="status_icon">info
+                    <md-tooltip md-direction="top">
+                        {{'Pending_Request' | translate}}</md-header>
+                    </md-tooltip>
+                  </md-icon>
+
+                  <md-icon ng-if="request.status === 'Approved'" style="color:#8BC34A;" class="status_icon">check_circle
+                    <md-tooltip md-direction="top">
+                        {{'Approved_Request' | translate}}
+                    </md-tooltip>
+                  </md-icon>
+
+                  <md-icon ng-if="request.status === 'Rejected'" style="color:#f44336;" class="status_icon">cancel
+                    <md-tooltip md-direction="top">
+                        {{'Rejected_Request' | translate}}
+                    </md-tooltip>
+                  </md-icon>
+                  <div class="md-list-item-text">
+
+                  <h3 ng-if="request.checkout_quantity">
+                    <md-icon style="color: #f44336">call_made</md-icon>
+                    {{request.user.name}}
+                    <p>{{'Checkout' | translate}} {{request.checkout_quantity}} {{'of' | translate}} {{request.product.name}}</p>
+
+                  </h3>
+                  <h3 ng-if="request.checkin_quantity">
+                    <md-icon style="color: #8BC34A">call_received</md-icon>
+                    {{request.user.name}}
+                    <p>{{'Checkin' | translate}} {{request.checkin_quantity}} {{'of' | translate}} {{request.product.name}}</p>
+
+                  </h3>
+
+                </div>
+                <div class="md-secondary-container requests-actions">
+                  <span class="moment_ago" style="float:right; width:150px;">{{request.createdAt | moment: 'fromNow'}}</span>
+                  <!--Admin Actions-->
+                  <md-button style="background-color: #8BC34A" class="md-fab md-mini" aria-label="Profile" ng-click="approveRequest(request)" ng-if="loggedInUser.role !== 'user' && loggedInUser.role !== 'comm'">
+                    <md-tooltip md-direction="top">
+                        {{'Approve_Request' | translate}}
+                    </md-tooltip>
+                      <md-icon style="color: #FFF">done</md-icon>
+                  </md-button>
+                  <md-button style="background-color: #f44336" class="md-fab md-mini" aria-label="Profile" ng-click="rejectRequest(request)" ng-if="loggedInUser.role !== 'user' && loggedInUser.role !== 'comm'">
+                    <md-tooltip md-direction="top">
+                        {{'Reject_Request' | translate}}
+                    </md-tooltip>
+                      <md-icon style="color: #FFF">clear</md-icon>
+                  </md-button>
+                  <!--Commissioner Action-->
+                  <md-button style="width:100%;" ng-if="loggedInUser.role == 'comm'" class="md-raised md-primary checkin-btn" ng-click="checkout(request)" ng-disabled="request.status !== 'Approved'"><md-icon>call_received</md-icon> {{'Checkout' | translate}}</md-button>
+                </div>
+                </md-list-item>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+    <div layout="row">
+      <div flex>
+        <md-card>
+          <md-card-content>
+            <md-header>{{'Products_In_Out_Stock' | translate}}</md-header>
+            <canvas style="overflow: auto;" id="bar" class="chart chart-bar"
+                             chart-data="data"
+                             chart-labels="labels"
+                             chart-series="series"
+                             chart-colors="colors"></canvas>
+          </md-card-content>
+        </md-card>
+      </div>
+    </div>
+</md-content>

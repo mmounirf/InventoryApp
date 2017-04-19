@@ -1,0 +1,212 @@
+<md-dialog aria-label="Assemble Product" class="assembleProductDialog">
+  <md-toolbar>
+    <div class="md-toolbar-tools">
+      <h2><md-icon>line_style</md-icon> {{'Assemble_Product' | translate}}</h2>
+      <span flex></span>
+      <md-button class="md-icon-button" ng-click="cancel()">
+        <i class="material-icons">clear</i>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+<md-dialog-content class="dialogContent">
+  <div layout-gt-sm="row" layout="column">
+    <!--All Products Coloumn-->
+    <div flex="50" class="allProductsCol">
+      <!--Products Search-->
+      <md-card md-whiteframe="5">
+        <md-toolbar class="md-table-toolbar md-default" ng-hide="selected.length || filter.show">
+        <div class="md-toolbar-tools">
+          <h2 class="md-title">{{'All_Products' | translate}}</h2>
+          <div flex="" class="flex"></div>
+          <md-button class="md-icon-button" ng-click="filter.show = true">
+            <md-icon class="material-icons">search</md-icon>
+          </md-button>
+        </div>
+        </md-toolbar>
+      <md-toolbar class="md-table-toolbar md-default" ng-show="filter.show">
+        <div class="md-toolbar-tools">
+          <md-input-container flex md-no-float class="md-block md-icon-left searchBox">
+            <md-icon>search</md-icon>
+            <input ng-model="search.$" type="text" placeholder="{{'Search_in_Products' | translate}}" show-focus="filter.show">
+          </md-input-container>
+          <md-button class="md-icon-button" ng-click="filter.show = false; search.$=''">
+            <md-icon>close</md-icon>
+          </md-button>
+        </div>
+        </md-toolbar>
+      </md-card>
+      <!--Products List-->
+      <md-list flex ng-show="(tempProducts | filter:search).length > 0" >
+        <md-list-item class="md-3-line" ng-repeat="product in tempProducts | filter:search:strict" ng-click="productAsComponent(product)">
+          <qrcode version="4"
+                 error-correction-level="L"
+                 size="1000"
+                 data="{{product.qrcode}}"
+                 download>
+         </qrcode>
+            <div class="md-list-item-text" layout="column">
+              <h3>{{ product.title }}</h3>
+              <h4 ng-if="product.description">{{ product.description }}</h4>
+              <div layout="coloumn">
+                <div flex>
+                  <p>{{'Room' | translate}}: {{product.location.roomNumber}}{{product.location.roomExtension}}</p>
+                </div>
+                <div flex>
+                  <p>{{'Quantity' | translate}}: {{product.quantity}}</p>
+                </div>
+                <div flex>
+                  <p>{{'Instock' | translate}}: {{product.instock}}</p>
+                </div>
+              </div>
+            </div>
+        <md-divider ></md-divider>
+        </md-list-item>
+      </md-list>
+      <div class="noResults" ng-show="(tempProducts | filter:search).length == 0" flex>
+          <img class="no-result-image" width="200" src="./app/icons/searching.png" />
+          <h4>{{'No_Products_Matching' | translate}} "{{search.$}}"</h4>
+      </div>
+    </div>
+
+    <!--Assembled Product Coloumn-->
+    <div flex="50" class="assembledProductCol">
+      <!--Assembled Product Components-->
+      <md-card md-whiteframe="5">
+        <md-toolbar class="md-table-toolbar md-default">
+        <div class="md-toolbar-tools">
+          <h2 class="md-title">{{assembledProduct.title}} {{'Components' | translate}}</h2>
+        </div>
+        </md-toolbar>
+      </md-card>
+      <form name="assembledProductForm">
+          <md-card ng-repeat="component in assembledProduct.components" class="componentsCard" ng-class="item.isActive ? 'expanded' : '!expanded'">
+
+            <md-card-title ng-click="item.isActive = !item.isActive" md-ink-ripple="#2196f3">
+              <div>
+              <h3>{{$index+1}}-{{ component.title }}</h3>
+                <span class="componentQuantity" flex ng-if="!assembledProductForm['usedQuantity'+$index].$invalid">{{assembledProduct.components[$index].usedQuantity}}</span>
+                <span class="componentError" flex ng-if="assembledProductForm['usedQuantity'+$index].$invalid">
+                  <md-icon>warning</md-icon>
+                </span>
+                <md-button class="md-icon-button md-warn removeComponent" aria-label="Remove Component" ng-click="removeComponent(component)">
+                    <md-icon>clear</md-icon>
+                </md-button>
+              </div>
+            </md-card-title>
+            <md-card-content>
+                <p ng-if="component.description">{{component.description}}</p>
+                <div layout="coloumn">
+                  <div flex>
+                    <p>{{'Room' | translate}}: <strong>{{component.location.roomNumber}}{{component.location.roomExtension}}</strong></p>
+                  </div>
+                  <div flex>
+                    <p>{{'Quantity' | translate}}: <strong>{{component.quantity}}</strong></p>
+                  </div>
+                  <div flex>
+                    <p>{{'Instock' | translate}}: <strong>{{component.instock}}</strong></p>
+                  </div>
+                </div>
+                <md-input-container md-no-float class="md-block">
+                    <input placeholder="{{component.title}} Quantity" name="usedQuantity{{$index}}" ng-model="assembledProduct.components[$index].usedQuantity" type="number" min="1" max="{{component.instock}}" required />
+                    <div ng-messages="assembledProductForm['usedQuantity'+$index].$error">
+                        <div ng-message="required">
+                            <span translate="Quantity_Required" translate-value-title="{{component.title}}"></span>
+                        </div>
+                        <div ng-message="max">
+                            <span translate="Quantity_Max" translate-value-title="{{component.title}}" translate-value-instock="{{component.instock}}"></span>
+                        </div>
+                    </div>
+                </md-input-container>
+            </md-card-content>
+
+          </md-card>
+          <div ng-show="assembledProduct.components.length<1" flex>
+              <h4 class="no-comp">{{'Components_Required' | translate}}</h4>
+          </div>
+          <!--Assembled Product Info-->
+          <md-card class="assembleProductInfo" md-whiteframe="5">
+            <md-toolbar class="md-table-toolbar md-default">
+            <div class="md-toolbar-tools">
+              <h2 class="md-title">{{assembledProduct.title}} {{'Component_Info' | translate}}</h2>
+            </div>
+            </md-toolbar>
+            <md-card-content>
+
+              <md-input-container class="md-block">
+                  <label>{{'Title' | translate}}</label>
+                  <md-icon class="input-field-icons">local_offer</md-icon>
+                  <input type="text" name="title" ng-model="assembledProduct.title" required />
+                  <div ng-messages="assembledProductForm['title'].$error">
+                      <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                  </div>
+              </md-input-container>
+              <md-input-container class="md-block">
+                  <label>{{'Description' | translate}}</label>
+                  <md-icon class="input-field-icons">assignment</md-icon>
+                  <input type="text" name="description" ng-model="assembledProduct.description" />
+              </md-input-container>
+
+              <md-input-container class="md-block">
+                  <label>{{'Barcode' | translate}}</label>
+                  <md-icon class="input-field-icons inv-icons flaticon-barcode-product"></md-icon>
+                  <input type="text" name="barcode" ng-model="assembledProduct.barcode" />
+              </md-input-container>
+
+              <div class="acContainer">
+              <md-icon class="input-field-icons">location_on</md-icon>
+              <md-autocomplete
+                class="aProductRoom"
+                required
+                name="location"
+                md-selected-item="assembledProduct.location"
+                ng-disabled=false
+                md-no-cache=true
+                md-search-text="searchText"
+                md-selected-item-change="getSelectedRoom(room)"
+                md-items="room in rooms | filter:searchText"
+                md-item-text="room.roomName"
+                md-min-length="0"
+                md-menu-class="room-autocomplete"
+                placeholder="{{'Room' | translate}} {{assembledProduct.title}}?">
+                <md-item-template>
+                  <span class="item-title">
+                    <span md-highlight-text="searchText" md-highlight-flags="^i">{{room.roomName}}</span>
+                  </span>
+                  <span class="item-metadata">
+                    {{'Floor' | translate}}: <md-icon class="material-icons">looks_{{room.floor | floorIcon}}</md-icon>
+                    {{'Room_Number' | translate}}: <strong>{{room.roomNumber}}{{room.roomExtension}}</strong>
+                  </span>
+                </md-item-template>
+                <md-not-found>
+                {{'No_Rooms_Matching' | translate}} "{{searchText}}".
+                </md-not-found>
+              </md-autocomplete>
+            </div>
+
+
+              <div class="qrCodeBox" ng-if="assembledProduct.title || assembledProduct.location">
+                <qrcode version="4" error-correction-level="L" size="1000"
+                        data="{{assembledProduct.title}}-{{assembledProduct.location.roomNumber}}{{assembledProduct.location.roomExtension}}" download>
+                </qrcode>
+                <p md-whiteframe="3" class="qrCodeLabel">{{assembledProduct.title}}-{{assembledProduct.location.roomNumber}}{{assembledProduct.location.roomExtension}}</p>
+              </div>
+
+
+          </md-card-content>
+          </md-card>
+      </form>
+    </div>
+  </div>
+</md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button class="md-raised md-warn" ng-click="cancel()">{{'Cancel' | translate}}</md-button>
+        <md-button class="md-raised md-primary saveBtn" ng-click="save(assembledProduct)" ng-disabled="assembledProductForm.$invalid || saveProgress || assembledProduct.components.length<1">
+            {{'Save' | translate}}
+            <md-progress-circular ng-if="saveProgress" class="saveProgress" md-mode="indeterminate" md-diameter="20">
+            </md-progress-circular>
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>

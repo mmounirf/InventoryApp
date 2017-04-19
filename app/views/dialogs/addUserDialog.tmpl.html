@@ -1,0 +1,209 @@
+<md-dialog aria-label="Add User" class="addUserDialog">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{'Add_User' | translate}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <i class="material-icons">clear</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <form name="addUserForm">
+                  <div layout="row">
+                    <div flex="20" class="rankIconCol">
+                      <div class="userRankIcon" style="background: url('./app/icons/{{user.rank}}.svg');" ng-if="user.rank"></div>
+                    </div>
+                    <div flex="80" class="userInfoCol">
+                      <md-input-container class="md-block">
+                          <label>{{'Full_Name' | translate}}</label>
+                          <md-icon class="input-field-icons">person</md-icon>
+                          <input type="text" name="name" ng-model="user.name" required />
+
+                          <div ng-messages="addUserForm.name.$error">
+                              <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          </div>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                          <label>{{'Username' | translate}}</label>
+                          <md-icon class="input-field-icons">assignment_ind</md-icon>
+                          <input type="text" name="username" ng-model="user.username" required />
+
+                          <div ng-messages="addUserForm.username.$error">
+                              <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          </div>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                          <label>{{'Password' | translate}}</label>
+                          <md-icon class="input-field-icons">lock</md-icon>
+                          <input type="password" name="password" ng-model="user.password" required />
+
+                          <div ng-messages="addUserForm.password.$error">
+                              <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          </div>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                          <label>{{'Role' | translate}}</label>
+                          <md-icon class="input-field-icons">account_circle</md-icon>
+                          <md-select name="role" ng-model="user.role" placeholder="{{'Select_Role' | translate}}" required>
+                              <md-option value="admin">{{'Administrator' | translate}}</md-option>
+                              <md-option value="comm">{{'Commissioner' | translate}}</md-option>
+                              <md-option value="user">{{'User' | translate}}</md-option>
+                          </md-select>
+
+                          <div ng-messages="editUserForm.role.$error">
+                              <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          </div>
+                      </md-input-container>
+                      <md-input-container class="md-block">
+                        <h4 style="margin: 0!important;">{{'Permissions' | translate}}</h4>
+                        <div layout="row">
+                        <div layout="column" layout-wrap flex>
+                          <p><md-icon class="material-icons">shopping_cart </md-icon>{{'Products' | translate}}</p>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.view_product">
+                              <span>{{'View_Products' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.add_product">
+                              <span>{{'Add_Products' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.edit_product">
+                              <span>{{'Edit_Products' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.delete_product">
+                              <span>{{'Delete_Products' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                        </div>
+                        <div layout="column" layout-wrap flex>
+                          <p><md-icon class="material-icons">location_on </md-icon>{{'Rooms' | translate}}</p>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.view_room"><span>{{'View_Rooms' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.add_room">
+                              <span>{{'Add_Rooms' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.edit_room">
+                              <span>{{'Edit_Rooms' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.delete_room">
+                              <span>{{'Delete_Rooms' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                        </div>
+                        <div layout="column" layout-wrap flex>
+                          <p><md-icon class="material-icons">group </md-icon>{{'Users' | translate}}</p>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.view_user">
+                              <span>{{'View_Users' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.add_user">
+                              <span>{{'Add_Users' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.edit_user">
+                              <span>{{'Edit_Users' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.delete_user">
+                              <span>{{'Delete_Users' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                        </div>
+                        <div layout="column" layout-wrap flex>
+                          <p><md-icon class="material-icons">assignment </md-icon>{{'Activities' | translate}}</p>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.view_activities">
+                              <span>{{'View_Activities' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.checkin_product">
+                              <span>{{'Checkin_Products' | translate}}</span>
+                            </md-checkbox></div>
+                          <div>
+                            <md-checkbox ng-model="user.permissions.checkout_product">
+                              <span>{{'Checkout_Products' | translate}}</span>
+                            </md-checkbox>
+                          </div>
+                        </div>
+                      </div>
+                      </md-input-container>
+
+                      <md-input-container class="md-block">
+                        {{'Force' | translate}}
+                      <md-radio-group ng-model="user.force" class="userForces" required>
+                        <md-radio-button md-ink-ripple="#2196f3" aria-label="Ground Froces" value="Ground_Froces">
+
+                            <div class="userForceFlag" style="background:url(./app/icons/Ground_Froces.gif);"></div>
+                            <span>{{'Ground_Froces' | translate}}</span>
+                        </md-radio-button>
+                        <md-radio-button md-ink-ripple="#2196f3" aria-label="Air Forces" value="Air_Forces">
+                            <div class="userForceFlag" style="background:url(./app/icons/Air_Forces.gif);"></div>
+                            <span>{{'Air_Forces' | translate}}</span>
+                        </md-radio-button>
+                        <md-radio-button md-ink-ripple="#2196f3" aria-label="Air Defence Forces" value="Air_Defence_Forces">
+                            <div class="userForceFlag" style="background:url(./app/icons/Air_Defence_Forces.gif);"></div>
+                            <span>{{'Air_Defence_Forces' | translate}}</span>
+                        </md-radio-button>
+                        <md-radio-button md-ink-ripple="#2196f3" aria-label="Navy Forces" value="Navy_Forces">
+                            <div class="userForceFlag" style="background:url(./app/icons/Navy_Forces.gif);"></div>
+                            <span>{{'Navy_Forces' | translate}}</span>
+                        </md-radio-button>
+                      </md-radio-group>
+                      </md-input-container>
+                      <md-radio-group ng-model="user.type" class="userTypeSelect" ng-change="onUserTypeChange(user.type)" required>
+                        <md-radio-button value="commissioned_officers" class="md-primary">
+                          {{'Commissioned_Officers' | translate}}
+                        </md-radio-button>
+                        <md-radio-button value="enlisted_personnel" class="md-primary">
+                          {{'Enlisted_Personnel' | translate}}
+                        </md-radio-button>
+                      </md-radio-group>
+                      <md-input-container class="md-block" ng-if="user.type">
+                          <label>{{'Rank' | translate}}</label>
+                          <md-icon class="input-field-icons">star</md-icon>
+                          <md-select name="rank" ng-model="user.rank" required placeholder="{{'User_Rank' | translate}}" required>
+                              <md-option ng-repeat="rank in ranks" ng-value="rank | stringToID">
+                                {{rank | translate}}
+                              </md-option>
+                          </md-select>
+                          <div ng-messages="addUserForm.rank.$error">
+                              <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                          </div>
+                        </md-input-container>
+                    </div>
+                </form>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button class="md-raised md-warn" ng-click="cancel()">
+                {{'Cancel' | translate}}
+            </md-button>
+            <md-button class="md-raised md-primary saveBtn" ng-click="save(user)" ng-disabled="addUserForm.$invalid || saveProgress">
+                {{'Save' | translate}} <md-progress-circular ng-if="saveProgress" class="saveProgress" md-mode="indeterminate" md-diameter="20" ></md-progress-circular>
+            </md-button>
+        </md-dialog-actions>
+
+</md-dialog>

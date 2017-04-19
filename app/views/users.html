@@ -1,0 +1,115 @@
+<md-content layout="column" layout-padding class="layout-column flex">
+    <md-card class="products-table-toolbar">
+      <md-toolbar class="md-table-toolbar md-default" ng-hide="selected.length || filter.show">
+    <div class="md-toolbar-tools">
+      <h2 class="md-title">{{'All_Users' | translate}}</h2>
+      <div flex="" class="flex"></div>
+      <md-button class="md-icon-button" ng-click="loadStuff()">
+        <md-tooltip md-direction="top">
+            {{'Reload_Users' | translate}}
+        </md-tooltip>
+        <md-icon>refresh</md-icon>
+      </md-button>
+      <md-button class="md-icon-button" ng-click="filter.show = true">
+        <md-tooltip md-direction="top">
+            {{'Search_Users' | translate}}
+        </md-tooltip>
+        <md-icon class="material-icons">search</md-icon>
+      </md-button>
+      <md-button class="md-icon-button md-primary" ng-click="addUser()">
+        <md-tooltip md-direction="top">
+            {{'Add_User' | translate}}
+        </md-tooltip>
+        <md-icon class="material-icons">person_add</md-icon>
+      </md-button>
+
+    </div>
+  </md-toolbar>
+  <md-toolbar class="md-table-toolbar md-default" ng-show="filter.show && !selected.length">
+    <div class="md-toolbar-tools">
+
+      <md-input-container flex md-no-float class="md-block md-icon-left" style="padding-top: 17px;">
+        <md-icon style="padding-top: 15px;">search</md-icon>
+            <input ng-model="search.$" type="text" placeholder="{{'Search_in_Users' | translate}}" id="searchInput" show-focus="filter.show">
+       </md-input-container>
+      <md-button class="md-icon-button" ng-click="removeFilter()">
+        <md-icon>close</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+  <md-toolbar class="md-table-toolbar alternate" ng-show="selected.length">
+    <div class="md-toolbar-tools" layout-align="space-between">
+      <div style="height: 50%; margin: auto 0;">{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+      <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="delete(selected)"  ng-if="user.permissions.delete_user">
+        <md-icon style="color: #FFF;">delete</md-icon>
+      </md-button>
+    </div>
+  </md-toolbar>
+
+    </md-card>
+    <md-card>
+      <md-table-container>
+        <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
+          <thead md-head md-order="query.order" md-on-reorder="getUsers">
+            <tr md-row>
+              <th md-column md:order:by="name">{{'Name' | translate}}</th>
+              <th md-column md:order:by="username">{{'Username' | translate}}</th>
+              <th md-column>{{'Role' | translate}}</th>
+              <th md-column>{{'Permissions' | translate}}</th>
+              <th md-column>{{'Rank' | translate}}</th>
+              <th md-column>{{'Force' | translate}}</th>
+              <th md-column data-md-numeric data-md-order-by="createdAt">{{'Created_On' | translate}}</th>
+              <th md-column data-md-numeric data-md-order-by="updatedAt">{{'Updated_On' | translate}}</th>
+              <th md-column></th>
+            </tr>
+          </thead>
+          <tbody md-body>
+            <tr md-row md-select="user" md-on-select="selectedItems" md-on-deselect="selectedItems" md-select-id="username" ng-repeat="user in users | filter:search:strict | limitTo: query.limit : (query.page -1) * query.limit | orderBy: query.order">
+              <td md-cell>{{user.name}}</td>
+              <td md-cell>{{user.username}}</td>
+              <td md-cell>{{user.role | roleBeautify | translate}}</td>
+              <td md-cell>
+                <div ng-if="user.permissions">
+                  <ol class="userRoles">
+                    <li ng-if="value" ng-repeat="(key, value) in user.permissions" class="userToolTip">{{key | translate}}</li>
+                  </ol>
+                </div>
+              </td>
+              <td md-cell>
+                <div class="userRankIcon" style="width: 150px; height: 150px; background: url('./app/icons/{{user.rank}}.svg');" ng-if="user.rank">
+                  <md-tooltip md-direction="right" class="userToolTip">
+                      {{user.rank | translate}}
+                  </md-tooltip>
+                </div>
+              </td>
+              <td md-cell>
+                <div class="userRankIcon" style="width: 120px; height: 120px; background: url('./app/icons/{{user.force}}.gif');" ng-if="user.force">
+                  <md-tooltip md-direction="right" class="userToolTip">
+                      {{user.force | translate}}
+                  </md-tooltip>
+                </div>
+              </td>
+              <td md-cell><p>{{'on' | translate}} {{user.createdAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{user.createdAt | moment: 'fromNow'}}</span></td>
+              <td md-cell><p>{{'on' | translate}} {{user.updatedAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{user.updatedAt | moment: 'fromNow'}}</span></td>
+              <td md-cell>
+                <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="deleteUser(user._id)" ng-if="loggedInUser.permissions.delete_user">
+                  <md-tooltip md-direction="top" class="userToolTip">
+                      {{'Delete' | translate}} {{user.rank | translate}}. {{user.name}}
+                  </md-tooltip>
+                  <md-icon style="color: #f44336;">delete</md-icon>
+                </md-button>
+                <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="editUser(user._id)" ng-if="loggedInUser.permissions.edit_user">
+                  <md-tooltip md-direction="top" class="userToolTip">
+                      {{'Edit' | translate}} {{user.rank | translate}}. {{user.name}}
+                  </md-tooltip>
+                  <md-icon style="color: #4CAF50;">create</md-icon>
+                </md-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </md-table-container>
+
+      <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{count}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+    </md-card>
+  </md-content>

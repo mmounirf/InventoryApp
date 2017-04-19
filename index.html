@@ -1,0 +1,151 @@
+<html lang="en" ng-app="InventoryApp" data-ng-app="monospaced.qrcode" ng-cloak >
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!--Loading Style Libraries-->
+    <link rel="stylesheet" href="./app/lib/css/angular-material.min.css">
+    <link rel="stylesheet" href="./app/lib/css/md-data-table.min.css">
+    <link rel="stylesheet" href="./app/lib/css/v-accordion.min.css">
+
+    <!--Loading My Style and My Icons-->
+    <link rel="stylesheet" type="text/css" href="./app/style.css">
+    <link ng-if="rtl" rel="stylesheet" type="text/css" ng-href="./app/rtl.css">
+    <link rel="stylesheet" type="text/css" href="./app/lib/fonts/inventory-app-icons/flaticon.css">
+
+    <!--Loading JS Framewoks & Libraries-->
+    <script src="./app/lib/js/angular.min.js"></script>
+
+    <script src="./app/lib/js/angular-animate.min.js"></script>
+    <script src="./app/lib/js/angular-aria.min.js"></script>
+    <script src="./app/lib/js/angular-messages.min.js"></script>
+    <script src="./app/lib/js/angular-route.min.js"></script>
+    <script src="./app/lib/js/angular-material.min.js"></script>
+    <script src="./app/lib/js/angular-sanitize.min.js"></script>
+    <script src="./app/lib/js/nedb.min.js"></script>
+    <script src="./app/lib/js/qrcode.js"></script>
+    <script src="./app/lib/js/qrcode_UTF8.js"></script>
+    <script src="./app/lib/js/md-data-table.min.js"></script>
+    <script src="./app/lib/js/moment-with-locales.js"></script>
+    <script src="./app/lib/js/underscore-min.js"></script>
+    <script src="./app/lib/js/Chart.min.js"></script>
+    <script src="./app/lib/js/angular-chart.min.js"></script>
+    <script src="./app/app.js"></script>
+    <script src="./app/js/CheckInCtrl.js"></script>
+    <script src="./app/js/CheckOutCtrl.js"></script>
+    <script src="./app/js/DashboardCtrl.js"></script>
+    <script src="./app/js/HomeCtrl.js"></script>
+    <script src="./app/js/LoginCtrl.js"></script>
+    <script src="./app/js/ProductsCtrl.js"></script>
+    <script src="./app/js/RoomsCtrl.js"></script>
+    <script src="./app/js/UsersCtrl.js"></script>
+    <script src="./app/js/ActivitiesCtrl.js"></script>
+    <script src="./app/lib/js/angular-qrcode.js"></script>
+    <script src="./app/lib/js/v-accordion.min.js"></script>
+    <script src="./app/lib/js/angular-barcode.min.js"></script>
+    <script src="./app/lib/js/focusIf.min.js"></script>
+    <script src="./app/lib/js/angular-filter.min.js"></script>
+    <script src="./app/lib/js/angular-translate.min.js"></script>
+    <script src="./app/lib/js/angular-translate-loader-static-files.min.js"></script>
+    <script src="./app/lib/js/tmhDynamicLocale.js"></script>
+
+
+</head>
+
+<body>
+    <md-toolbar class="md-whiteframe-6dp" style="z-index:9; position: fixed;">
+        <div class="md-toolbar-tools title_bar">
+            <div style="width: 82%; height: 100%; margin-top: 22px; -webkit-app-region: drag">
+                <h1 style="margin-top: 10px;">UMISTIC Inventory Manager <span id="appVersion"></span></h1>
+            </div>
+            <div flex></div>
+
+            <div class="titlebar">
+                <md-button class="md-icon-button minimize" onClick="minimize_win()">
+                    <md-icon style=" color:#FFF;">remove</md-icon>
+                    <md-tooltip md-direction="bottom">
+                        Minimize
+                    </md-tooltip>
+                </md-button>
+                <md-button class="md-icon-button maximize-btn" onClick="maximize_win()">
+                    <md-icon style=" color:#FFF;">web_asset</md-icon>
+                    <md-tooltip md-direction="bottom">
+                        Maximize
+                    </md-tooltip>
+                </md-button>
+                <md-button class="md-icon-button close-btn" onClick="close_win()">
+                    <md-icon style=" color:#FFF;">close</md-icon>
+                    <md-tooltip md-direction="bottom">
+                        Close
+                    </md-tooltip>
+                </md-button>
+            </div>
+
+        </div>
+    </md-toolbar>
+
+    <md-toolbar id="app-menu">
+        <div class="md-toolbar-tools">
+            <h1><md-icon style=" color:#FFF;" class="ng-scope material-icons"> {{page_icon}}</md-icon> {{page_name | translate}}</h1>
+            <span flex></span>
+            <div ng-if="page_name !== 'Login'">
+            <md-button aria-label="Reports" ng-click="go_to('dashboard')">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">home </md-icon>
+                {{'Dashboard' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Products" ng-click="go_to('products')" ng-if="loggedInUser.permissions.view_product">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">shopping_cart </md-icon>
+                {{'Products' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Check-In Product" ng-click="go_to('check_in_product')" ng-if="loggedInUser.permissions.checkin_product">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">call_received </md-icon>
+                {{'Check-In' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Check-Out Product" ng-click="go_to('check_out_product')" ng-if="loggedInUser.permissions.checkout_product">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">call_made </md-icon>
+                {{'Check-Out' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Activities" ng-click="go_to('activities')" ng-if="loggedInUser.permissions.view_activities">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">assignment </md-icon>
+                {{'Activities' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Rooms" ng-click="go_to('rooms')" ng-if="loggedInUser.permissions.view_room">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">location_on </md-icon>
+                {{'Rooms' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Users" ng-click="go_to('users')" ng-if="loggedInUser.permissions.view_user">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">group </md-icon>
+                {{'Users' | translate}}
+            </md-button>
+            <md-button class="md-default md-ink-ripple" aria-label="Language" ng-click="changeLanguage()">
+                <md-icon style=" color:#FFF;" class="ng-scope material-icons">g_translate </md-icon>
+                {{language | translate}}
+            </md-button>
+          </div>
+        </div>
+    </md-toolbar>
+    <ng-view id="{{ page_name | nospace }}"></ng-view>
+    <script>
+        const remote = require('electron').remote;
+        document.getElementById('appVersion').innerText = remote.app.getVersion();
+        function close_win() {
+            remote.getCurrentWindow().close();
+        }
+
+        function minimize_win() {
+            remote.getCurrentWindow().minimize();
+        }
+
+        function maximize_win() {
+            if (!remote.getCurrentWindow().isMaximized()) {
+                remote.getCurrentWindow().maximize();
+            } else {
+                remote.getCurrentWindow().unmaximize();
+            }
+        }
+
+    </script>
+</body>
+
+</html>

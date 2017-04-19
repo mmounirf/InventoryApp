@@ -1,0 +1,154 @@
+<md-content layout="column" layout-padding class="layout-column flex">
+  <md-card class="products-table-toolbar">
+    <md-toolbar class="md-table-toolbar md-default" ng-hide="selected.length || filter.show">
+  <div class="md-toolbar-tools">
+    <h2 class="md-title">{{'All_Products' | translate}}</h2>
+    <div flex="" class="flex"></div>
+    <md-button class="md-icon-button" ng-click="loadStuff()">
+      <md-tooltip md-direction="top">
+          {{'Reload_Products' | translate}}
+      </md-tooltip>
+      <md-icon>refresh</md-icon>
+    </md-button>
+    <md-button class="md-icon-button" ng-click="filter.show = true">
+      <md-tooltip md-direction="top">
+          {{'Search_Products' | translate}}
+      </md-tooltip>
+      <md-icon class="material-icons">search</md-icon>
+    </md-button>
+    <md-button class="md-icon-button md-primary" ng-click="addProduct()" ng-if="loggedInUser.permissions.add_product">
+      <md-tooltip md-direction="top">
+          {{'Add_Product' | translate}}
+      </md-tooltip>
+      <md-icon class="material-icons">add_shopping_cart</md-icon>
+    </md-button>
+    <md-button class="md-icon-button md-primary" ng-click="assembleProduct(selected)" ng-if="loggedInUser.permissions.add_product">
+      <md-tooltip md-direction="top">
+          {{'Assemble_Product' | translate}}
+      </md-tooltip>
+      <md-icon>line_style</md-icon>
+    </md-button>
+    <md-button class="md-icon-button md-primary" ng-click="print(selected)">
+      <md-tooltip md-direction="top">
+          {{'Print' | translate}}
+      </md-tooltip>
+      <md-icon>print</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-toolbar class="md-table-toolbar md-default" ng-show="filter.show && !selected.length">
+  <div class="md-toolbar-tools">
+
+    <md-input-container flex md-no-float class="md-block md-icon-left" style="padding-top: 17px;">
+      <md-icon style="padding-top: 15px;">search</md-icon>
+          <input ng-model="search.$" type="text" placeholder="{{'Search_in_Products' | translate}}" id="searchInput" show-focus="filter.show">
+     </md-input-container>
+    <md-button class="md-icon-button" ng-click="filter.show = false; search.$=''">
+      <md-icon>close</md-icon>
+    </md-button>
+  </div>
+</md-toolbar>
+
+<md-toolbar class="md-table-toolbar alternate" ng-show="selected.length">
+  <div class="md-toolbar-tools" layout-align="space-between">
+    <div style="height: 50%; margin: auto 0;">{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+<div class="selectedActions">
+    <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="delete(selected)" ng-if="loggedInUser.permissions.delete_product">
+      <md-tooltip md-direction="top">
+          {{'Delete_Selected' | translate}}
+      </md-tooltip>
+      <md-icon style="color: #FFF;">delete</md-icon>
+    </md-button>
+    <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="assembleProduct(selected)" ng-if="loggedInUser.permissions.add_product">
+      <md-tooltip md-direction="top">
+          {{'Assemble_Selected' | translate}}
+      </md-tooltip>
+      <md-icon style="color: #FFF;">line_style</md-icon>
+    </md-button>
+    <md-button style="height: 50%; margin: auto 0;" class="md-icon-button" ng-click="print(selected)">
+      <md-tooltip md-direction="top">
+          {{'Print_Selected' | translate}}
+      </md-tooltip>
+      <md-icon style="color: #FFF;">print</md-icon>
+    </md-button>
+</div>
+  </div>
+</md-toolbar>
+  </md-card>
+
+  <md-card>
+    <md-table-container>
+      <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
+        <thead md-head md-order="query.order" md-on-reorder="getProducts">
+          <tr md-row>
+            <th md-column md:order:by="title"><md-icon class="inv-icons flaticon-tag"></md-icon> {{'Title' | translate}}</th>
+            <th md-column md:order:by="description"><md-icon class="inv-icons flaticon-file"></md-icon> {{'Description' | translate}}</th>
+            <th md-column data-md-order-by="quantity"><md-icon class="inv-icons flaticon-box-1"></md-icon> {{'Quantity' | translate}}</th>
+            <th md-column data-md-order-by="instock"><md-icon class="inv-icons flaticon-box-2"></md-icon> {{'In_Stock' | translate}}</th>
+            <th md-column data-md-order-by="outstock"><md-icon class="inv-icons flaticon-box-3"></md-icon> {{'Out_Stock' | translate}}</th>
+            <th md-column data-md-order-by="location.roomNumber"><md-icon class="inv-icons flaticon-door"></md-icon> {{'Room' | translate}}</th>
+            <th md-column style="text-align:center;"><i class="flaticon-barcode-product"></i> {{'Barcode' | translate}}</th>
+            <th md-column><i class="flaticon-qr-code"></i> {{'QR_Code' | translate}}</th>
+            <th md-column data-md-order-by="createdAt"><md-icon class="inv-icons flaticon-clock"></md-icon>  {{'Created_On' | translate}}</th>
+            <th md-column data-md-order-by="updatedAt"><md-icon class="inv-icons flaticon-clock"></md-icon>  {{'Updated_On' | translate}}</th>
+          </tr>
+        </thead>
+        <tbody md-body>
+          <tr md-row md-select="product" md-on-select="selectedItems" md-on-deselect="selectedItems" md-select-id="title" ng-repeat="product in products | filter:search:strict | limitTo: query.limit : (query.page -1) * query.limit | orderBy: query.order">
+
+            <td md-cell>
+              <p ng-if="!product.components.length">{{product.title}}</p>
+
+                <v-accordion class="vAccordion--default componentsAccordion" ng-if="product.components.length">
+                  <v-pane>
+                    <v-pane-header>
+                      {{product.title}} <span class="componentsCount">{{product.components.length}}</span>
+                    </v-pane-header>
+
+                    <v-pane-content>
+
+                      <ol class="componentsList">
+                        <li ng-repeat="component in product.components">
+                          {{component.usedQuantity}} x {{component.title}}
+                        </li>
+                      </ol>
+                    </v-pane-content>
+                  </v-pane>
+                </v-accordion>
+
+            </td>
+            <td md-cell>{{product.description}}</td>
+            <td md-cell>{{product.quantity}}</td>
+            <td md-cell>
+              {{product.instock}}
+            </td>
+            <td md-cell>
+              {{product.outstock}}
+            </td>
+            <td md-cell>{{product.location.roomNumber}}{{product.location.roomExtension}}</td>
+            <td md-cell style="text-align: center;">
+              <barcode ng-if="product.barcode" type="code128b" render="img" string="{{product.barcode}}" options="barcodeOptions" class="productsBarcode">
+              </barcode>
+                {{product.barcode}}
+            </td>
+            <td md-cell>
+              <a ng-click="enlargeQR(product)">
+                <qrcode version="4"
+                       error-correction-level="L"
+                       size="1000"
+                       data="{{product.qrcode}}"
+                       download>
+               </qrcode>
+              </a>
+            </td>
+            <td md-cell><p>on {{product.createdAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{product.createdAt | moment: 'fromNow'}}</span></td>
+            <td md-cell><p>on {{product.updatedAt | date: "dd.EEE.MMM.y"}} </p><span class="moment_ago">{{product.updatedAt | moment: 'fromNow'}}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </md-table-container>
+
+    <md-table-pagination md-limit="query.limit" md-limit-options="limitOptions" md-page="query.page" md-total="{{products.length}}" md-page-select="options.pageSelect" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+  </md-card>
+</md-content>

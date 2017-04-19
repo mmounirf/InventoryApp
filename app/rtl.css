@@ -1,0 +1,19 @@
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Cairo'), local('Cairo-Regular'), url('./lib/fonts/MoGpUcTu_oZLf0bsrG2xFQ.woff2') format('woff2');
+  unicode-range: U+0600-06FF, U+200C-200E, U+2010-2011, U+FB50-FDFF, U+FE80-FEFC;
+}
+
+button, .md-button, md-card md-card-content{
+  direction: rtl!important;
+}
+
+.moment_ago{
+  float: left!important;
+}
+
+html, body, div, h1, h2, h3, h4, h5, h6, p, span, button{
+  font-family: 'Cairo', sans-serif!important;
+}

@@ -1,0 +1,27 @@
+{
+  "name": "InventoryApp",
+  "version": "1.6.0",
+  "description": "UMISTIC InventoryApp",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "M.Mounir",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^1.4.1"
+  },
+  "dependencies": {
+    "chart.js": "^2.5.0",
+    "electron-reload": "^1.1.0",
+    "nedb": "^1.8.0"
+  }
+}

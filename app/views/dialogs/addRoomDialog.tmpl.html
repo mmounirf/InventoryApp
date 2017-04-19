@@ -1,0 +1,95 @@
+<md-dialog aria-label="Add Room" class="addRoomDialog">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{'Add_Room' | translate}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <i class="material-icons">clear</i>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <form name="addRoomForm">
+                    <md-input-container class="md-block">
+                        <label>{{'Title' | translate}}</label>
+                        <md-icon class="input-field-icons">subtitles</md-icon>
+                        <input type="text" name="roomName" ng-model="room.roomName" required />
+
+                        <div ng-messages="addRoomForm.roomName.$error">
+                            <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>{{'Floor' | translate}}</label>
+                        <md-icon class="input-field-icons">location_city</md-icon>
+                        <md-select name="floor" ng-model="room.floor" md-on-close="roomNumber(addRoomForm.floor.$viewValue)" required>
+                            <md-option value="100">{{'Floor_1' | translate}}</md-option>
+                            <md-option value="200">{{'Floor_2' | translate}}</md-option>
+                            <md-option value="300">{{'Floor_3' | translate}}</md-option>
+                            <md-option value="400">{{'Floor_4' | translate}}</md-option>
+                        </md-select>
+
+                        <div ng-messages="addRoomForm.floor.$error">
+                            <div ng-message="required">{{'Required_Validation' | translate}}</div>
+                        </div>
+                    </md-input-container>
+
+                    <md-input-container class="md-block roomNumberSelect" ng-if="addRoomForm.floor.$viewValue">
+                        <label>{{'Room_Number' | translate}}</label>
+                        <md-icon class="input-field-icons">format_list_numbered</md-icon>
+                        <input type="number" step="any" name="roomNumber" ng-model="room.roomNumber" min="{{minNumber}}" max="{{maxNumber}}" focus-if="floorChanged" required />
+
+                        <div ng-messages="addRoomForm.roomNumber.$error">
+                            <div ng-message="required">
+                                {{'Required_Validation' | translate}}
+                            </div>
+                            <div ng-message="min">
+
+                                <span translate="Room_Min_Validation" translate-values="{ minNumber: '{{minNumber}}', floor: '{{floor | translate}}'}"></span>
+                            </div>
+
+                            <div ng-message="max">
+                                <span translate="Room_Max_Validation" translate-values="{ maxNumber: '{{maxNumber}}', floor: '{{floor | translate}}'}"></span>
+                            </div>
+                        </div>
+                    </md-input-container>
+
+                    <md-switch ng-model="addRoomForm.hasExtension" aria-label="Room Extension" ng-if="addRoomForm.floor.$viewValue" ng-init="addRoomForm.hasExtension=false">
+                      {{'Has_Extenision' | translate}}
+                    </md-switch>
+
+                    <md-input-container class="md-block" ng-if="addRoomForm.hasExtension">
+                        <label>{{'Extension' | translate}}</label>
+                        <md-icon class="input-field-icons">sort_by_alpha</md-icon>
+                        <input type="text" name="roomExtension" ng-model="room.roomExtension" ng-pattern="/^[a-zA-Z]/" md-maxlength="1" ng-change="room.roomExtension=room.roomExtension.toUpperCase();" required />
+                        <div ng-messages="addRoomForm.roomExtension.$error">
+                            <div ng-message="required">
+                                {{'Required_Validation' | translate}}
+                            </div>
+                            <div ng-message="pattern">
+                              {{'Extension_Pattern_Validation' | translate}}
+                            </div>
+                            <div ng-message="md-maxlength">
+                              {{'Extension_Max_Validation' | translate}}
+                            </div>
+                        </div>
+                    </md-input-container>
+                </form>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button class="md-raised md-warn" ng-click="cancel()">
+                {{'Cancel' | translate}}
+            </md-button>
+            <md-button class="md-raised md-primary saveBtn" ng-click="save(room)" ng-disabled="addRoomForm.$invalid || saveProgress">
+                {{'Save' | translate}} <md-progress-circular ng-if="saveProgress" class="saveProgress" md-mode="indeterminate" md-diameter="20" ></md-progress-circular>
+            </md-button>
+        </md-dialog-actions>
+
+</md-dialog>

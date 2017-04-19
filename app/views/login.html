@@ -1,0 +1,37 @@
+<md-content layout-gt-sm="column" layout-padding>
+  <div layout="row">
+  <div flex="50" class="login-container">
+    <md-card>
+
+        <md-card-title>
+          <md-card-title-text>
+            <span class="md-headline"><md-icon style=" color:#000;" class="ng-scope material-icons">lock</md-icon> {{page_name}}</span>
+            <span class="md-subhead">Login to manage stock items, or login as administrator to manage the system.</span>
+          </md-card-title-text>
+        </md-card-title>
+      <md-card-content layout="column">
+    <md-input-container md-no-float class="md-block">
+      <label>Username</label>
+      <md-icon class="input-field-icons">assignment_ind</md-icon>
+      <input ng-model="username">
+    </md-input-container>
+
+    <md-input-container md-no-float class="md-block">
+      <label>Password</label>
+      <md-icon class="input-field-icons">lock</md-icon>
+      <input ng-model="password" type="password">
+    </md-input-container>
+    <md-card-actions layout="row" layout-align="end center">
+      <md-buttonn class="md-raised md-primary md-button md-ink-ripple" aria-label="Login" ng-click="login()" ng-disabled="!username.length || !password.length">
+        Login
+      </md-button>
+              </md-card-actions>
+            </md-card-content>
+</md-card>
+
+  </div>
+
+
+
+  </div>
+</md-content>
