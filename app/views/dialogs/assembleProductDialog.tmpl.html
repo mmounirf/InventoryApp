@@ -83,7 +83,7 @@
           <md-card ng-repeat="component in assembledProduct.components" class="componentsCard" ng-class="item.isActive ? 'expanded' : '!expanded'">
 
             <md-card-title ng-click="item.isActive = !item.isActive" md-ink-ripple="#2196f3">
-              <div>
+              <div class="componentHeader">
               <h3>{{$index+1}}-{{ component.title }}</h3>
                 <span class="componentQuantity" flex ng-if="!assembledProductForm['usedQuantity'+$index].$invalid">{{assembledProduct.components[$index].usedQuantity}}</span>
                 <span class="componentError" flex ng-if="assembledProductForm['usedQuantity'+$index].$invalid">
