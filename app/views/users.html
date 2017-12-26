@@ -76,14 +76,14 @@
                 </div>
               </td>
               <td md-cell>
-                <div class="userRankIcon" style="width: 150px; height: 150px; background: url('./app/icons/{{user.rank}}.svg');" ng-if="user.rank">
+                <div class="userRankIcon" style="width: 150px; height: 150px;" ng-style="{'background':'url(./app/icons/{{user.rank}}.svg)'}" ng-if="user.rank">
                   <md-tooltip md-direction="right" class="userToolTip">
                       {{user.rank | translate}}
                   </md-tooltip>
                 </div>
               </td>
               <td md-cell>
-                <div class="userRankIcon" style="width: 120px; height: 120px; background: url('./app/icons/{{user.force}}.gif');" ng-if="user.force">
+                <div class="userRankIcon" style="width: 120px; height: 120px;" ng-style="{'background-image':'url(./app/icons/{{user.force}}.gif)'}" ng-if="user.force">
                   <md-tooltip md-direction="right" class="userToolTip">
                       {{user.force | translate}}
                   </md-tooltip>

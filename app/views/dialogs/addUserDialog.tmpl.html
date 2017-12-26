@@ -12,10 +12,10 @@
 
         <md-dialog-content>
             <div class="md-dialog-content">
-                <form name="addUserForm">
+                <form name="addUserForm" class="addUserForm">
                   <div layout="row">
                     <div flex="20" class="rankIconCol">
-                      <div class="userRankIcon" style="background: url('./app/icons/{{user.rank}}.svg');" ng-if="user.rank"></div>
+                      <div class="userRankIcon" ng-style="{'background':'url(./app/icons/{{user.rank}}.svg)'}" ng-if="user.rank"></div>
                     </div>
                     <div flex="80" class="userInfoCol">
                       <md-input-container class="md-block">

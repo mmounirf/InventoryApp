@@ -9,7 +9,15 @@ const url = require('url')
 let mainWindow
 
 function createWindow () {
-  mainWindow = new BrowserWindow({width:1024, height: 768, frame: false, icon: __dirname + '/app.ico'})
+  mainWindow = new BrowserWindow(  {
+    width: 1024,
+    height: 768,
+    frame: false,
+    icon: __dirname + '/app.ico',
+    webPreferences: {
+      //devTools: false
+    }
+  })
 
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),

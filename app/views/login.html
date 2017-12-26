@@ -14,15 +14,17 @@
       <label>Username</label>
       <md-icon class="input-field-icons">assignment_ind</md-icon>
       <input ng-model="username">
+      <div class="hint">Use <strong>admin</strong></div>
     </md-input-container>
 
     <md-input-container md-no-float class="md-block">
       <label>Password</label>
       <md-icon class="input-field-icons">lock</md-icon>
       <input ng-model="password" type="password">
+      <div class="hint">Use <strong>admin</strong></div>
     </md-input-container>
     <md-card-actions layout="row" layout-align="end center">
-      <md-buttonn class="md-raised md-primary md-button md-ink-ripple" aria-label="Login" ng-click="login()" ng-disabled="!username.length || !password.length">
+      <md-button class="md-raised md-primary md-button md-ink-ripple" aria-label="Login" ng-click="login()" ng-disabled="!username.length || !password.length">
         Login
       </md-button>
               </md-card-actions>

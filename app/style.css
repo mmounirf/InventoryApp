@@ -807,7 +807,6 @@ barcode{
 }
 
 .userRankIcon {
-  background: url(./app/icons/lieutenant.png);
       width: 100%;
       height: 50%;
       background-size: contain!important;
@@ -943,4 +942,15 @@ md-dialog-actions {
 
  .status_icon {
     font-size: 40px;
+}
+
+md-dialog-actions{
+  position: static;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.addUserForm{
+  margin-bottom: 200px;
 }
