@@ -20,14 +20,6 @@ npm install
 ```sh
 npm start
 ```
-- Install dependencies.
-```sh
-npm install
-```
-- Start the app.
-```sh
-npm start
-```
 ## How to build executable file
 - Run Electron Packager 
 ```sh
